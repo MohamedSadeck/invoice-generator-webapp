@@ -2,7 +2,7 @@ import { Outlet, Link, useNavigate } from "react-router";
 import { useAuth } from "~/context/AuthContext";
 import { LogOut, FileText, Home, User, PlusCircle } from "lucide-react";
 
-const DashboardLayout = () => {
+const DashboardLayout = ({children}: {children: React.ReactNode}) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 

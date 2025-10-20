@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
 import { useAuth } from "~/context/AuthContext";
+import DashboardLayout from "./DashboardLayout";
 
 const ProtectedLayout = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -29,7 +30,9 @@ const ProtectedLayout = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Outlet />
+      <DashboardLayout>
+        <Outlet />
+      </DashboardLayout>
     </div>
   );
 };

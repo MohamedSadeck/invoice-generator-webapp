@@ -2,7 +2,7 @@ import { type RouteConfig, index, route, layout } from "@react-router/dev/routes
 
 export default [
     // Public routes
-    index("routes/landing/landing-page.tsx"),
+    index("routes/landing/landing.tsx"),
 
 
     // Auth routes (redirects to dashboard if already authenticated)
