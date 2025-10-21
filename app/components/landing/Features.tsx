@@ -34,10 +34,10 @@ const Features = () => {
             return (
               <Grid size={{ xs: 12, md: 6, lg: 4 }} key={feature.id}>
                 <Card
-                  elevation={0}
+                  elevation={1}
                   sx={{
                     p: 3,
-                    height: '100%',
+                    height: '90%',
                     bgcolor: 'white',
                     transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                     '&:hover': {
@@ -47,7 +47,7 @@ const Features = () => {
                   }}
                 >
                   <CardContent>
-                    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                       <IconComponent size={48} color="#1976d2" />
                     </Box>
                     <Typography variant="h5" component="h3" sx={{ fontWeight: 600, mb: 2, textAlign: 'center' }}>

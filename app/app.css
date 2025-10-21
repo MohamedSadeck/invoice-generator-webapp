@@ -17,13 +17,13 @@
 @layer components {
   /* Header component styles */
   .header-custom {
-    @apply bg-white px-6 fixed w-full z-10;
+    @apply bg-white px-2 fixed w-full z-10;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
 
   /* Navigation component styles */
   .nav-custom {
-    @apply hidden md:flex md:items-center md:gap-12;
+    @apply hidden md:flex md:items-center md:gap-8;
   }
 
   /* Navigation link styles with higher specificity - works with both <a> and MUI <Link> */

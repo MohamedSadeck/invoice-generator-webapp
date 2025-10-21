@@ -35,7 +35,7 @@ const Testimonials = () => {
                   },
                 }}
               >
-                <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                <CardContent sx={{ flexGrow: 1, p: 3, display: 'flex', flexDirection: 'column' }}>
                   <Box
                     sx={{
                       fontSize: 40,

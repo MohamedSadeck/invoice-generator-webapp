@@ -23,7 +23,7 @@ const Header = () => {
     };
 
     return (
-        <header className='header-custom'>
+        <Box className='header-custom'>
             <Box sx={{ maxWidth: '1152px', mx: 'auto', py: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box 
                     sx={{ 
@@ -40,8 +40,8 @@ const Header = () => {
                         AI Invoice Generator
                     </Typography>
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    <nav className='nav-custom'>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box className='nav-custom'>
                         <Link 
                             onClick={(e) => { e.preventDefault(); handleScrollToSection('features'); }} 
                             href='#features' 
@@ -81,7 +81,7 @@ const Header = () => {
                         >
                             FAQ
                         </Link>
-                    </nav>
+                    </Box>
                 </Box>
                 <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                     <Button
@@ -90,7 +90,7 @@ const Header = () => {
                         variant="outlined"
                         size="medium"
                         sx={{
-                            px: 3,
+                            px: 2,
                             py: 1,
                             textTransform: 'none',
                             fontWeight: 500,
@@ -105,7 +105,7 @@ const Header = () => {
                         variant="contained"
                         size="medium"
                         sx={{
-                            px: 3,
+                            px: 2,
                             py: 1,
                             textTransform: 'none',
                             fontWeight: 500,
@@ -116,7 +116,7 @@ const Header = () => {
                     </Button>
                 </Box>
             </Box>
-        </header>
+        </Box>
     )
 }
 
