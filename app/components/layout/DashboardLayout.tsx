@@ -1,12 +1,16 @@
 import { Outlet, Link, useNavigate } from "react-router";
 import { useAuth } from "~/context/AuthContext";
 import { LogOut, FileText, Home, User, PlusCircle } from "lucide-react";
+import { createLogger } from "~/utils/logger";
+
+const logger = createLogger('Dashboard');
 
 const DashboardLayout = ({children}: {children: React.ReactNode}) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    logger.info('User initiated logout', { userId: user?.id });
     logout();
     navigate("/login");
   };

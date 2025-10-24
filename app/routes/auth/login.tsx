@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "~/context/AuthContext";
+import { createLogger } from "~/utils/logger";
+
+const logger = createLogger('Login');
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -11,15 +14,25 @@ const Login = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // TODO: Replace with actual API call
-    // For now, just simulate a login
-    login({
-      id: "1",
-      email: email,
-      name: email.split("@")[0],
-    });
-    
-    navigate("/dashboard");
+    try {
+      logger.info('Login attempt', { email });
+      
+      // TODO: Replace with actual API call
+      // For now, just simulate a login
+      login({
+        id: "1",
+        email: email,
+        name: email.split("@")[0],
+      });
+      
+      logger.info('Login successful', { email });
+      navigate("/dashboard");
+    } catch (error) {
+      logger.error('Login failed', { 
+        email, 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      });
+    }
   };
 
   return (

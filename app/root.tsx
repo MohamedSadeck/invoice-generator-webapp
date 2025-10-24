@@ -13,6 +13,7 @@ import "./app.css";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./ui/theme";
+import { logger } from "./utils/logger";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -91,9 +92,18 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       error.status === 404
         ? "The requested page could not be found."
         : error.statusText || details;
+    
+    logger.warn('Route error', { 
+      status: error.status, 
+      statusText: error.statusText,
+      data: error.data 
+    });
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
     stack = error.stack;
+    logger.exception(error, { context: 'ErrorBoundary' });
+  } else if (error instanceof Error) {
+    logger.exception(error, { context: 'ErrorBoundary' });
   }
 
   return (

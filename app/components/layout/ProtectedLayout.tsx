@@ -2,6 +2,9 @@ import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
 import { useAuth } from "~/context/AuthContext";
 import DashboardLayout from "./DashboardLayout";
+import { createLogger } from "~/utils/logger";
+
+const logger = createLogger('ProtectedRoute');
 
 const ProtectedLayout = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -9,6 +12,7 @@ const ProtectedLayout = () => {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
+      logger.warn('Unauthorized access attempt, redirecting to login');
       navigate("/login", { replace: true });
     }
   }, [isAuthenticated, isLoading, navigate]);

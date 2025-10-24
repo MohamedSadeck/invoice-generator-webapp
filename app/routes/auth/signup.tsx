@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "~/context/AuthContext";
+import { createLogger } from "~/utils/logger";
+
+const logger = createLogger('Signup');
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -12,15 +15,26 @@ const Signup = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // TODO: Replace with actual API call
-    // For now, just simulate a signup and login
-    login({
-      id: "1",
-      email: email,
-      name: name,
-    });
-    
-    navigate("/dashboard");
+    try {
+      logger.info('Signup attempt', { email, name });
+      
+      // TODO: Replace with actual API call
+      // For now, just simulate a signup and login
+      login({
+        id: "1",
+        email: email,
+        name: name,
+      });
+      
+      logger.info('Signup successful', { email, name });
+      navigate("/dashboard");
+    } catch (error) {
+      logger.error('Signup failed', { 
+        email, 
+        name,
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      });
+    }
   };
 
   return (
