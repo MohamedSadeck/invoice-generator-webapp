@@ -51,12 +51,14 @@ export const getAllInvoices = async (): Promise<Invoice[]> => {
     });
     
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || 'Failed to load invoices';
     logger.error('Failed to fetch invoices', {
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
+      backendMessage: errorMessage
     });
     
-    toast.error('Failed to load invoices');
+    toast.error(errorMessage);
     throw error;
   }
 };
@@ -78,13 +80,15 @@ export const getInvoiceById = async (invoiceId: string): Promise<Invoice> => {
     });
     
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || 'Failed to load invoice details';
     logger.error('Failed to fetch invoice', {
       invoiceId,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
+      backendMessage: errorMessage
     });
     
-    toast.error('Failed to load invoice details');
+    toast.error(errorMessage);
     throw error;
   }
 };
@@ -114,13 +118,15 @@ export const createInvoice = async (
     
     toast.success('Invoice created successfully');
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || 'Failed to create invoice';
     logger.error('Failed to create invoice', {
       clientName: data.clientName,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
+      backendMessage: errorMessage
     });
     
-    toast.error('Failed to create invoice');
+    toast.error(errorMessage);
     throw error;
   }
 };
@@ -144,13 +150,15 @@ export const updateInvoice = async (
     
     toast.success('Invoice updated successfully');
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || 'Failed to update invoice';
     logger.error('Failed to update invoice', {
       invoiceId,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
+      backendMessage: errorMessage
     });
     
-    toast.error('Failed to update invoice');
+    toast.error(errorMessage);
     throw error;
   }
 };
@@ -169,13 +177,15 @@ export const deleteInvoice = async (invoiceId: string): Promise<void> => {
     logger.info('Invoice deleted successfully', { invoiceId });
     
     toast.success('Invoice deleted successfully');
-  } catch (error) {
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || 'Failed to delete invoice';
     logger.error('Failed to delete invoice', {
       invoiceId,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
+      backendMessage: errorMessage
     });
     
-    toast.error('Failed to delete invoice');
+    toast.error(errorMessage);
     throw error;
   }
 };
@@ -199,13 +209,15 @@ export const parseInvoiceText = async (text: string): Promise<CreateInvoiceReque
     });
     
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || 'Failed to parse invoice text';
     logger.error('Failed to parse invoice text', {
       textLength: text.length,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
+      backendMessage: errorMessage
     });
     
-    toast.error('Failed to parse invoice text');
+    toast.error(errorMessage);
     throw error;
   }
 };

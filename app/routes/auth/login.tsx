@@ -145,12 +145,14 @@ const Login = () => {
       
       logger.info('Login successful', { email });
       navigate("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || "Failed to login. Please try again.";
       logger.error('Login failed', { 
         email, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+        error: error instanceof Error ? error.message : 'Unknown error',
+        backendMessage: errorMessage
       });
-      setError("Failed to login. Please try again.");
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

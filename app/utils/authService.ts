@@ -59,13 +59,15 @@ export const register = async (data: RegisterRequest): Promise<AuthResponse> => 
     
     toast.success('Registration successful');
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || 'Registration failed. Please try again.';
     logger.error('Registration failed', {
       email: data.email,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
+      backendMessage: errorMessage
     });
     
-    toast.error('Registration failed. Please try again.');
+    toast.error(errorMessage);
     throw error;
   }
 };
@@ -92,13 +94,15 @@ export const login = async (data: LoginRequest): Promise<AuthResponse> => {
     
     toast.success('Login successful');
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || 'Login failed. Please check your credentials.';
     logger.error('Login failed', {
       email: data.email,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
+      backendMessage: errorMessage
     });
     
-    toast.error('Login failed. Please check your credentials.');
+    toast.error(errorMessage);
     throw error;
   }
 };
@@ -117,9 +121,11 @@ export const getCurrentUser = async (): Promise<User> => {
     });
     
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || 'Failed to fetch user profile';
     logger.error('Failed to fetch user profile', {
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
+      backendMessage: errorMessage
     });
     
     // Don't show toast for silent profile fetch failures
@@ -147,12 +153,14 @@ export const updateProfile = async (data: Partial<User>): Promise<User> => {
     
     toast.success('Profile updated successfully');
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
+    const errorMessage = error?.response?.data?.message || 'Failed to update profile';
     logger.error('Failed to update profile', {
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
+      backendMessage: errorMessage
     });
     
-    toast.error('Failed to update profile');
+    toast.error(errorMessage);
     throw error;
   }
 };

@@ -196,13 +196,15 @@ const Signup = () => {
       logger.info('Signup successful', { email, name });
       setSuccess("Account created successfully!");
       navigate("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || "Failed to create account. Please try again.";
       logger.error('Signup failed', { 
         email, 
         name,
-        error: error instanceof Error ? error.message : 'Unknown error' 
+        error: error instanceof Error ? error.message : 'Unknown error',
+        backendMessage: errorMessage
       });
-      setError("Failed to create account. Please try again.");
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
