@@ -13,6 +13,8 @@ import {
   Link as MuiLink,
 } from "@mui/material";
 import { Eye, EyeOff } from "lucide-react";
+import { API_PATHS } from "~/utils/apiPaths";
+import axiosInstance from "~/utils/axiosInstance";
 
 const logger = createLogger('Login');
 
@@ -132,16 +134,14 @@ const Login = () => {
     try {
       logger.info('Login attempt', { email });
       
-      // TODO: Replace with actual API call
-      // For now, just simulate a login
-      login({
-        user: {
-          id: "1",
-          email: email,
-          name: email.split("@")[0],
-        },
-        token: "dummy-token",
+      const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, {
+        email,
+        password,
       });
+
+      const data = response.data;
+
+      login({ user: { id: data.id, name: data.name, email: data.email }, token: data.token });
       
       logger.info('Login successful', { email });
       navigate("/dashboard");
