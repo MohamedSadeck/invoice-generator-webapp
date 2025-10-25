@@ -1,6 +1,7 @@
 import { Outlet } from "react-router";
 import { redirect } from "react-router";
 import { useAuth } from "~/context/AuthContext";
+import { Box, CircularProgress, Typography } from "@mui/material";
 
 // Loader: run before rendering the route. This checks localStorage for a token
 // and redirects authenticated users to the dashboard. Loaders run on client
@@ -26,19 +27,37 @@ const AuthLayout = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
-        </div>
-      </div>
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Box sx={{ textAlign: "center" }}>
+          <CircularProgress size={48} sx={{ color: "grey.900" }} />
+          <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
+            Loading...
+          </Typography>
+        </Box>
+      </Box>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <Box
+      sx={{
+        minHeight: "100vh",
+        bgcolor: "grey.50",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        p: 2,
+      }}
+    >
       <Outlet />
-    </div>
+    </Box>
   );
 };
 

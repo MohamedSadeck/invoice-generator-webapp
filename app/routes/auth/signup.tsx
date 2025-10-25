@@ -2,31 +2,199 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "~/context/AuthContext";
 import { createLogger } from "~/utils/logger";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Paper,
+  InputAdornment,
+  IconButton,
+  Link as MuiLink,
+} from "@mui/material";
+import { Eye, EyeOff } from "lucide-react";
+import axiosInstance from "~/utils/axiosInstance";
+import { API_PATHS } from "~/utils/apiPaths";
 
 const logger = createLogger('Signup');
 
 const Signup = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState<{
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  }>({
+    name:"",
+    email:"",
+    password:"",
+    confirmPassword:""
+  });
+  
+  const [showPassword, setShowPassword]= useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword]= useState<boolean>(false);
+  
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [fieldsError, setFieldsError] = useState<{
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  }>({
+    name:"",
+    email:"",
+    password:"",
+    confirmPassword:""
+  });
+
+  const [touched, setTouched] = useState<{
+    name: boolean;
+    email: boolean;
+    password: boolean;
+    confirmPassword: boolean;
+  }>({
+    name: false,
+    email: false,
+    password: false,
+    confirmPassword: false
+  });
+
+  const validateName = (name: string): string => {
+    if (!name.trim()) {
+      return "Name is required";
+    }
+    return "";
+  };
+
+  const validateEmail = (email: string): string => {
+    if (!email.trim()) {
+      return "Email is required";
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      return "Email is invalid";
+    }
+    return "";
+  };
+
+  const validatePassword = (password: string): string => {
+    if (!password) {
+      return "Password is required";
+    }
+    if (password.length < 6) {
+      return "Password must be at least 6 characters";
+    }
+    return "";
+  };
+
+  const validateConfirmPassword = (confirmPassword: string, password: string): string => {
+    if (!confirmPassword) {
+      return "Confirm Password is required";
+    }
+    if (confirmPassword !== password) {
+      return "Passwords do not match";
+    }
+    return "";
+  };
+
+  const { name, email, password, confirmPassword } = formData;
+
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Validate on change if field has been touched
+    if (touched[name as keyof typeof touched]) {
+      let error = "";
+      switch (name) {
+        case "name":
+          error = validateName(value);
+          break;
+        case "email":
+          error = validateEmail(value);
+          break;
+        case "password":
+          error = validatePassword(value);
+          break;
+        case "confirmPassword":
+          error = validateConfirmPassword(value, formData.password);
+          break;
+      }
+      setFieldsError((prev) => ({ ...prev, [name]: error }));
+    }
+  };
+
+  const handleBlur = (field: keyof typeof touched) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    
+    let error = "";
+    switch (field) {
+      case "name":
+        error = validateName(formData.name);
+        break;
+      case "email":
+        error = validateEmail(formData.email);
+        break;
+      case "password":
+        error = validatePassword(formData.password);
+        break;
+      case "confirmPassword":
+        error = validateConfirmPassword(formData.confirmPassword, formData.password);
+        break;
+    }
+    setFieldsError((prev) => ({ ...prev, [field]: error }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate all fields
+    const nameError = validateName(name);
+    const emailError = validateEmail(email);
+    const passwordError = validatePassword(password);
+    const confirmPasswordError = validateConfirmPassword(confirmPassword, password);
+
+    setFieldsError({
+      name: nameError,
+      email: emailError,
+      password: passwordError,
+      confirmPassword: confirmPasswordError,
+    });
+
+    // Mark all fields as touched
+    setTouched({
+      name: true,
+      email: true,
+      password: true,
+      confirmPassword: true,
+    });
+
+    // If there are any errors, don't submit
+    if (nameError || emailError || passwordError || confirmPasswordError) {
+      setError("Please fix all errors before submitting");
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
     
     try {
       logger.info('Signup attempt', { email, name });
-      
-      // TODO: Replace with actual API call
-      // For now, just simulate a signup and login
-      login({
-        id: "1",
-        email: email,
-        name: name,
+      const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER,{
+        name,
+        email,
+        password,
       });
-      
+
+      const data = response.data;
+      login({ user: { id: data.id, name: data.name, email: data.email }, token: data.token });
+
       logger.info('Signup successful', { email, name });
+      setSuccess("Account created successfully!");
       navigate("/dashboard");
     } catch (error) {
       logger.error('Signup failed', { 
@@ -34,71 +202,168 @@ const Signup = () => {
         name,
         error: error instanceof Error ? error.message : 'Unknown error' 
       });
+      setError("Failed to create account. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="w-full max-w-md">
-      <div className="bg-white p-8 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-              Full Name
-            </label>
-            <input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900"
-              placeholder="John Doe"
-            />
-          </div>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900"
-              placeholder="you@example.com"
-            />
-          </div>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900"
-              placeholder="••••••••"
-            />
-          </div>
-          <button
+    <Box sx={{ width: "100%", maxWidth: 500 }}>
+      <Paper elevation={3} sx={{ p: 4 }}>
+        <Typography variant="h4" component="h2" align="center" gutterBottom fontWeight="bold">
+          Sign Up
+        </Typography>
+
+        <Box component="form" onSubmit={handleSubmit} sx={{ 
+          mt: 3,
+          "& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus, & input:-webkit-autofill:active": {
+            WebkitBoxShadow: "0 0 0 100px white inset !important",
+            boxShadow: "0 0 0 100px white inset !important",
+            WebkitTextFillColor: "black !important",
+            color: "black !important",
+            transition: "background-color 5000s ease-in-out 0s",
+          },
+        }}>
+          <TextField
+            fullWidth
+            id="name"
+            name="name"
+            label="Full Name"
+            placeholder="John Doe"
+            value={name}
+            onChange={handleInputChange}
+            onBlur={() => handleBlur("name")}
+            error={touched.name && !!fieldsError.name}
+            helperText={touched.name && fieldsError.name}
+            margin="normal"
+            required
+          />
+
+          <TextField
+            fullWidth
+            id="email"
+            name="email"
+            label="Email"
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={handleInputChange}
+            onBlur={() => handleBlur("email")}
+            error={touched.email && !!fieldsError.email}
+            helperText={touched.email && fieldsError.email}
+            margin="normal"
+            required
+          />
+
+          <TextField
+            fullWidth
+            id="password"
+            name="password"
+            label="Password"
+            type={showPassword ? "text" : "password"}
+            placeholder="••••••••"
+            value={password}
+            onChange={handleInputChange}
+            onBlur={() => handleBlur("password")}
+            error={touched.password && !!fieldsError.password}
+            helperText={touched.password && fieldsError.password}
+            margin="normal"
+            required
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          <TextField
+            fullWidth
+            id="confirmPassword"
+            name="confirmPassword"
+            label="Confirm Password"
+            type={showConfirmPassword ? "text" : "password"}
+            placeholder="••••••••"
+            value={confirmPassword}
+            onChange={handleInputChange}
+            onBlur={() => handleBlur("confirmPassword")}
+            error={touched.confirmPassword && !!fieldsError.confirmPassword}
+            helperText={touched.confirmPassword && fieldsError.confirmPassword}
+            margin="normal"
+            required
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle confirm password visibility"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    edge="end"
+                  >
+                    {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          {error && (
+            <Typography color="error" variant="body2" sx={{ mt: 2 }}>
+              {error}
+            </Typography>
+          )}
+
+          {success && (
+            <Typography color="success.main" variant="body2" sx={{ mt: 2 }}>
+              {success}
+            </Typography>
+          )}
+
+          <Button
             type="submit"
-            className="w-full py-2 px-4 bg-gray-900 text-white rounded-md font-medium hover:bg-gray-800"
+            fullWidth
+            variant="contained"
+            disabled={isLoading}
+            sx={{
+              mt: 3,
+              mb: 2,
+              py: 1.5,
+              bgcolor: "grey.900",
+              "&:hover": {
+                bgcolor: "grey.800",
+              },
+            }}
           >
-            Sign Up
-          </button>
-        </form>
-        <p className="text-center text-sm text-gray-600 mt-4">
-          Already have an account?{" "}
-          <Link to="/login" className="text-gray-900 font-medium hover:underline">
-            Login
-          </Link>
-        </p>
-      </div>
-    </div>
+            {isLoading ? "Creating Account..." : "Create Account"}
+          </Button>
+
+          <Typography variant="body2" align="center" color="text.secondary">
+            Already have an account?{" "}
+            <MuiLink
+              component={Link}
+              to="/login"
+              sx={{
+                color: "grey.900",
+                fontWeight: "medium",
+                textDecoration: "none",
+                "&:hover": {
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              Login
+            </MuiLink>
+          </Typography>
+        </Box>
+      </Paper>
+    </Box>
   );
 };
 

@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from "react-router";
 import { useAuth } from "~/context/AuthContext";
 import DashboardLayout from "./DashboardLayout";
 import { createLogger } from "~/utils/logger";
+import { Box, CircularProgress, Typography } from "@mui/material";
 
 const logger = createLogger('ProtectedRoute');
 
@@ -19,12 +20,21 @@ const ProtectedLayout = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
-        </div>
-      </div>
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Box sx={{ textAlign: "center" }}>
+          <CircularProgress size={48} sx={{ color: "grey.900" }} />
+          <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
+            Loading...
+          </Typography>
+        </Box>
+      </Box>
     );
   }
 
@@ -33,11 +43,11 @@ const ProtectedLayout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <Box sx={{ minHeight: "100vh", bgcolor: "grey.50" }}>
       <DashboardLayout>
         <Outlet />
       </DashboardLayout>
-    </div>
+    </Box>
   );
 };
 

@@ -2,17 +2,132 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "~/context/AuthContext";
 import { createLogger } from "~/utils/logger";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Paper,
+  InputAdornment,
+  IconButton,
+  Link as MuiLink,
+} from "@mui/material";
+import { Eye, EyeOff } from "lucide-react";
 
 const logger = createLogger('Login');
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState<{
+    email: string;
+    password: string;
+  }>({
+    email: "",
+    password: ""
+  });
+  
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [fieldsError, setFieldsError] = useState<{
+    email: string;
+    password: string;
+  }>({
+    email: "",
+    password: ""
+  });
+
+  const [touched, setTouched] = useState<{
+    email: boolean;
+    password: boolean;
+  }>({
+    email: false,
+    password: false
+  });
+
+  const validateEmail = (email: string): string => {
+    if (!email.trim()) {
+      return "Email is required";
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      return "Email is invalid";
+    }
+    return "";
+  };
+
+  const validatePassword = (password: string): string => {
+    if (!password) {
+      return "Password is required";
+    }
+    if (password.length < 6) {
+      return "Password must be at least 6 characters";
+    }
+    return "";
+  };
+
+  const { email, password } = formData;
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Validate on change if field has been touched
+    if (touched[name as keyof typeof touched]) {
+      let error = "";
+      switch (name) {
+        case "email":
+          error = validateEmail(value);
+          break;
+        case "password":
+          error = validatePassword(value);
+          break;
+      }
+      setFieldsError((prev) => ({ ...prev, [name]: error }));
+    }
+  };
+
+  const handleBlur = (field: keyof typeof touched) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    
+    let error = "";
+    switch (field) {
+      case "email":
+        error = validateEmail(formData.email);
+        break;
+      case "password":
+        error = validatePassword(formData.password);
+        break;
+    }
+    setFieldsError((prev) => ({ ...prev, [field]: error }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate all fields
+    const emailError = validateEmail(email);
+    const passwordError = validatePassword(password);
+
+    setFieldsError({
+      email: emailError,
+      password: passwordError,
+    });
+
+    // Mark all fields as touched
+    setTouched({
+      email: true,
+      password: true,
+    });
+
+    // If there are any errors, don't submit
+    if (emailError || passwordError) {
+      setError("Please fix all errors before submitting");
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
     
     try {
       logger.info('Login attempt', { email });
@@ -20,9 +135,12 @@ const Login = () => {
       // TODO: Replace with actual API call
       // For now, just simulate a login
       login({
-        id: "1",
-        email: email,
-        name: email.split("@")[0],
+        user: {
+          id: "1",
+          email: email,
+          name: email.split("@")[0],
+        },
+        token: "dummy-token",
       });
       
       logger.info('Login successful', { email });
@@ -32,57 +150,118 @@ const Login = () => {
         email, 
         error: error instanceof Error ? error.message : 'Unknown error' 
       });
+      setError("Failed to login. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="w-full max-w-md">
-      <div className="bg-white p-8 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900"
-              placeholder="you@example.com"
-            />
-          </div>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900"
-              placeholder="••••••••"
-            />
-          </div>
-          <button
+    <Box sx={{ width: "100%", maxWidth: 500 }}>
+      <Paper elevation={3} sx={{ p: 4 }}>
+        <Typography variant="h4" component="h2" align="center" gutterBottom fontWeight="bold">
+          Login
+        </Typography>
+
+        <Box component="form" onSubmit={handleSubmit} sx={{ 
+          mt: 3,
+          "& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus, & input:-webkit-autofill:active": {
+            WebkitBoxShadow: "0 0 0 100px white inset !important",
+            boxShadow: "0 0 0 100px white inset !important",
+            WebkitTextFillColor: "black !important",
+            color: "black !important",
+            transition: "background-color 5000s ease-in-out 0s",
+          },
+        }}>
+          <TextField
+            fullWidth
+            id="email"
+            name="email"
+            label="Email"
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={handleInputChange}
+            onBlur={() => handleBlur("email")}
+            error={touched.email && !!fieldsError.email}
+            helperText={touched.email && fieldsError.email}
+            margin="normal"
+            required
+          />
+
+          <TextField
+            fullWidth
+            id="password"
+            name="password"
+            label="Password"
+            type={showPassword ? "text" : "password"}
+            placeholder="••••••••"
+            value={password}
+            onChange={handleInputChange}
+            onBlur={() => handleBlur("password")}
+            error={touched.password && !!fieldsError.password}
+            helperText={touched.password && fieldsError.password}
+            margin="normal"
+            required
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          {error && (
+            <Typography color="error" variant="body2" sx={{ mt: 2 }}>
+              {error}
+            </Typography>
+          )}
+
+          <Button
             type="submit"
-            className="w-full py-2 px-4 bg-gray-900 text-white rounded-md font-medium hover:bg-gray-800"
+            fullWidth
+            variant="contained"
+            disabled={isLoading}
+            sx={{
+              mt: 3,
+              mb: 2,
+              py: 1.5,
+              bgcolor: "grey.900",
+              "&:hover": {
+                bgcolor: "grey.800",
+              },
+            }}
           >
-            Login
-          </button>
-        </form>
-        <p className="text-center text-sm text-gray-600 mt-4">
-          Don't have an account?{" "}
-          <Link to="/signup" className="text-gray-900 font-medium hover:underline">
-            Sign up
-          </Link>
-        </p>
-      </div>
-    </div>
+            {isLoading ? "Logging in..." : "Login"}
+          </Button>
+
+          <Typography variant="body2" align="center" color="text.secondary">
+            Don't have an account?{" "}
+            <MuiLink
+              component={Link}
+              to="/signup"
+              sx={{
+                color: "grey.900",
+                fontWeight: "medium",
+                textDecoration: "none",
+                "&:hover": {
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              Sign up
+            </MuiLink>
+          </Typography>
+        </Box>
+      </Paper>
+    </Box>
   );
 };
 

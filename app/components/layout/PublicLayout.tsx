@@ -1,38 +1,96 @@
 import { Outlet, Link } from "react-router";
+import {
+  Box,
+  AppBar,
+  Toolbar,
+  Container,
+  Typography,
+  Button,
+  Link as MuiLink,
+} from "@mui/material";
 
 const PublicLayout = () => {
   return (
-    <div className="min-h-screen bg-white">
+    <Box sx={{ minHeight: "100vh", bgcolor: "background.paper" }}>
       {/* Navigation Header */}
-      <header className="border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link to="/" className="text-xl font-bold text-gray-900">
-              Invoice Generator
-            </Link>
-            <nav className="flex space-x-4">
-              <Link
+      <AppBar
+        position="static"
+        elevation={0}
+        sx={{
+          bgcolor: "background.paper",
+          borderBottom: 1,
+          borderColor: "divider",
+        }}
+      >
+        <Container maxWidth="lg">
+          <Toolbar disableGutters sx={{ height: 64, justifyContent: "space-between" }}>
+            <MuiLink
+              component={Link}
+              to="/"
+              underline="none"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: "bold",
+                  color: "grey.900",
+                }}
+              >
+                Invoice Generator
+              </Typography>
+            </MuiLink>
+
+            <Box component="nav" sx={{ display: "flex", gap: 2 }}>
+              <Button
+                component={Link}
                 to="/login"
-                className="px-4 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+                sx={{
+                  px: 2,
+                  py: 1,
+                  fontSize: "0.875rem",
+                  fontWeight: "medium",
+                  color: "grey.700",
+                  textTransform: "none",
+                  "&:hover": {
+                    color: "grey.900",
+                    bgcolor: "grey.100",
+                  },
+                }}
               >
                 Login
-              </Link>
-              <Link
+              </Button>
+              <Button
+                component={Link}
                 to="/signup"
-                className="px-4 py-2 rounded-md text-sm font-medium text-white bg-gray-900 hover:bg-gray-800"
+                variant="contained"
+                sx={{
+                  px: 2,
+                  py: 1,
+                  fontSize: "0.875rem",
+                  fontWeight: "medium",
+                  bgcolor: "grey.900",
+                  textTransform: "none",
+                  "&:hover": {
+                    bgcolor: "grey.800",
+                  },
+                }}
               >
                 Sign Up
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+              </Button>
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
 
       {/* Main Content */}
-      <main>
+      <Box component="main">
         <Outlet />
-      </main>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

@@ -50,7 +50,7 @@ export default function App() {
   return (
     <AuthProvider>
       <ThemeProvider theme={theme}>
-
+        <Outlet />
         <Toaster
           position="top-right"
           toastOptions={{
@@ -75,7 +75,6 @@ export default function App() {
             },
           }}
         />
-        <Outlet />
       </ThemeProvider>
     </AuthProvider>
   );
