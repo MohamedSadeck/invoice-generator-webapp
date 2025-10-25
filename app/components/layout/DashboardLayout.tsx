@@ -2,7 +2,7 @@ import { Outlet } from "react-router";
 import { Box, Container } from "@mui/material";
 import Header from "../app/Header";
 
-const DashboardLayout = ({children}: {children: React.ReactNode}) => {
+const DashboardLayout = () => {
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "grey.50" }}>
       <Header />

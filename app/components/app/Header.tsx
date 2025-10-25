@@ -11,10 +11,13 @@ import {
 } from '@mui/material';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { FileText } from 'lucide-react';
+import logger from '~/utils/logger';
 
 const Header = () => {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
+
+    logger.debug(`Rendering Header component for user: ${user}`);
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);

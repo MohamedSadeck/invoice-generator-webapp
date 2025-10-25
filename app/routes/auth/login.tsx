@@ -139,7 +139,7 @@ const Login = () => {
         password,
       });
 
-      const data = response.data;
+      const data = response.data.data;
 
       login({ user: { id: data.id, name: data.name, email: data.email }, token: data.token });
       

@@ -44,9 +44,7 @@ const ProtectedLayout = () => {
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "grey.50" }}>
-      <DashboardLayout>
         <Outlet />
-      </DashboardLayout>
     </Box>
   );
 };

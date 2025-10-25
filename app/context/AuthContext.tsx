@@ -13,6 +13,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  register: (data: { user: User; token: string }) => void;
   login: (data: { user: User; token: string }) => void;
   updateUser: (user: User) => void;
   logout: () => void;
@@ -47,7 +48,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const user = JSON.parse(storedUser);
         setUser(user);
         setIsAuthenticated(true);
-        logger.info('User session restored', { userId: user.id });
+        logger.info('User session restored', { user: user });
       } else {
         logger.debug('No stored user session found');
       }
@@ -60,6 +61,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsLoading(false);
     }
   }
+
+  const register = ({ user, token }: { user: User; token: string }) => {
+    try {
+      setUser(user);
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
+      setIsAuthenticated(true);
+      logger.info('User registered successfully', { userId: user.id, email: user.email });
+    } catch (error) {
+      logger.error('Failed to persist user registration', { 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      });
+    }
+  };
 
   const login = ({ user, token }: { user: User; token: string }) => {
     
@@ -109,6 +124,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user,
         isAuthenticated: !!user,
         isLoading,
+        register,
         login,
         updateUser,
         logout,

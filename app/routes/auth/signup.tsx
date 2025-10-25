@@ -100,7 +100,7 @@ const Signup = () => {
 
   const { name, email, password, confirmPassword } = formData;
 
-  const { login } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -190,8 +190,8 @@ const Signup = () => {
         password,
       });
 
-      const data = response.data;
-      login({ user: { id: data.id, name: data.name, email: data.email }, token: data.token });
+      const data = response.data.data;
+      register({ user: { id: data.id, name: data.name, email: data.email }, token: data.token });
 
       logger.info('Signup successful', { email, name });
       setSuccess("Account created successfully!");
