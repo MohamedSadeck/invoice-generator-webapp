@@ -16,12 +16,13 @@ import {
     ListItemText,
     Divider
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FileText, Menu as MenuIcon, Home, FileText as InvoiceIcon, User, LogOut, Plus, ChevronDown } from 'lucide-react';
 import logger from '~/utils/logger';
 
 const Header = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const { user, logout } = useAuth();
 
     logger.debug(`Rendering Header component for user: ${user}`);
@@ -86,19 +87,25 @@ const Header = () => {
 
                 {/* Desktop Navigation - Only visible on large screens */}
                 <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2, alignItems: 'center' }}>
-                    {navigationItems.map((item) => (
-                        <Button
-                            key={item.path}
-                            onClick={() => navigate(item.path)}
-                            sx={{
-                                textTransform: 'none',
-                                color: 'text.primary',
-                                '&:hover': { bgcolor: 'grey.100' }
-                            }}
-                        >
-                            {item.label}
-                        </Button>
-                    ))}
+                    {navigationItems.map((item) => {
+                        const isActive = location.pathname === item.path;
+                        return (
+                            <Button
+                                key={item.path}
+                                onClick={() => navigate(item.path)}
+                                sx={{
+                                    textTransform: 'none',
+                                    color: isActive ? 'white' : 'text.primary',
+                                    bgcolor: isActive ? 'primary.main' : 'transparent',
+                                    '&:hover': { 
+                                        bgcolor: isActive ? 'primary.dark' : 'grey.100' 
+                                    }
+                                }}
+                            >
+                                {item.label}
+                            </Button>
+                        );
+                    })}
                 </Box>
 
                 {/* User Profile Button */}
@@ -168,16 +175,31 @@ const Header = () => {
 
                     {/* Navigation Items */}
                     <List>
-                        {navigationItems.map((item) => (
-                            <ListItem key={item.path} disablePadding>
-                                <ListItemButton onClick={() => handleNavigation(item.path)}>
-                                    <ListItemIcon sx={{ minWidth: 40 }}>
-                                        {item.icon}
-                                    </ListItemIcon>
-                                    <ListItemText primary={item.label} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
+                        {navigationItems.map((item) => {
+                            const isActive = location.pathname === item.path;
+                            return (
+                                <ListItem key={item.path} disablePadding>
+                                    <ListItemButton 
+                                        onClick={() => handleNavigation(item.path)}
+                                        sx={{
+                                            bgcolor: isActive ? 'primary.main' : 'transparent',
+                                            color: isActive ? 'white' : 'inherit',
+                                            '&:hover': {
+                                                bgcolor: isActive ? 'primary.dark' : 'grey.100'
+                                            },
+                                            '& .MuiListItemIcon-root': {
+                                                color: isActive ? 'white' : 'inherit'
+                                            }
+                                        }}
+                                    >
+                                        <ListItemIcon sx={{ minWidth: 40 }}>
+                                            {item.icon}
+                                        </ListItemIcon>
+                                        <ListItemText primary={item.label} />
+                                    </ListItemButton>
+                                </ListItem>
+                            );
+                        })}
                     </List>
 
                     <Divider />

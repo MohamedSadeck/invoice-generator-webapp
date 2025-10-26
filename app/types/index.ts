@@ -220,10 +220,16 @@ export interface DashboardSummaryRequest {
   endDate?: string;
 }
 
-export interface DashboardSummaryResponse {
-  summary: string;
+export interface DashboardSummaryData {
+  invoiceCount: number;
+  totalRevenue: string;
+  totalOutstanding: string;
   insights: string[];
-  recommendations: string[];
+}
+
+export interface DashboardSummaryResponse {
+  success: boolean;
+  data: DashboardSummaryData;
 }
 
 // ============================================================================
