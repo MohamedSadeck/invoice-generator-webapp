@@ -4,6 +4,26 @@ A modern, production-ready template for building full-stack React applications u
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
 
+## 🎯 Type System Documentation
+
+This project uses a centralized TypeScript type system. All interfaces are defined in one location for consistency and maintainability.
+
+### 📚 Quick Links
+- **[Type Definitions](app/types/index.ts)** - Main type index (40+ types)
+- **[Quick Start Guide](README_TYPES.md)** - Get started with types
+- **[Quick Reference](TYPES_QUICK_REFERENCE.md)** - Common types at a glance
+- **[Full Documentation](TYPES_DOCUMENTATION.md)** - Comprehensive guide
+- **[Architecture](TYPES_ARCHITECTURE.md)** - System design & diagrams
+- **[Migration Guide](TYPES_MIGRATION_SUMMARY.md)** - Migration details
+- **[Checklist](TYPES_CHECKLIST.md)** - Development guidelines
+
+### 🚀 Quick Example
+```typescript
+import type { Invoice, User, InvoicesResponse } from '~/types';
+
+const [invoices, setInvoices] = useState<Invoice[]>([]);
+```
+
 ## Features
 
 - 🚀 Server-side rendering

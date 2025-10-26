@@ -17,7 +17,7 @@ import {
     Divider
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Menu as MenuIcon, Home, FileText as InvoiceIcon, User, LogOut, Plus } from 'lucide-react';
+import { FileText, Menu as MenuIcon, Home, FileText as InvoiceIcon, User, LogOut, Plus, ChevronDown } from 'lucide-react';
 import logger from '~/utils/logger';
 
 const Header = () => {
@@ -123,6 +123,7 @@ const Header = () => {
                     <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'inline' } }}>
                         {user?.name ?? 'Account'}
                     </Typography>
+                    <ChevronDown size={16} />
                 </Button>
 
                 {/* Profile Menu */}

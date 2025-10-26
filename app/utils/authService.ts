@@ -9,30 +9,16 @@ import axiosInstance from './axiosInstance';
 import { API_PATHS } from './apiPaths';
 import { createLogger } from './logger';
 import toast from 'react-hot-toast';
+import type { 
+  User, 
+  LoginRequest, 
+  RegisterRequest, 
+  AuthResponse,
+  AuthApiResponse,
+  UserResponse 
+} from '~/types';
 
 const logger = createLogger('AuthService');
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-}
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface RegisterRequest {
-  email: string;
-  password: string;
-  name: string;
-}
-
-export interface AuthResponse {
-  user: User;
-  token: string;
-}
 
 /**
  * Register a new user
@@ -44,21 +30,21 @@ export const register = async (data: RegisterRequest): Promise<AuthResponse> => 
       name: data.name 
     });
     
-    const response = await axiosInstance.post<AuthResponse>(
+    const response = await axiosInstance.post<AuthApiResponse>(
       API_PATHS.AUTH.REGISTER,
       data
     );
     
     // Store token
-    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('token', response.data.data.token);
     
     logger.info('User registered successfully', { 
-      userId: response.data.user.id,
-      email: response.data.user.email 
+      userId: response.data.data.user._id,
+      email: response.data.data.user.email 
     });
     
     toast.success('Registration successful');
-    return response.data;
+    return response.data.data;
   } catch (error: any) {
     const errorMessage = error?.response?.data?.message || 'Registration failed. Please try again.';
     logger.error('Registration failed', {
@@ -79,21 +65,21 @@ export const login = async (data: LoginRequest): Promise<AuthResponse> => {
   try {
     logger.info('Attempting user login', { email: data.email });
     
-    const response = await axiosInstance.post<AuthResponse>(
+    const response = await axiosInstance.post<AuthApiResponse>(
       API_PATHS.AUTH.LOGIN,
       data
     );
     
     // Store token
-    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('token', response.data.data.token);
     
     logger.info('User logged in successfully', { 
-      userId: response.data.user.id,
-      email: response.data.user.email 
+      userId: response.data.data.user._id,
+      email: response.data.data.user.email 
     });
     
     toast.success('Login successful');
-    return response.data;
+    return response.data.data;
   } catch (error: any) {
     const errorMessage = error?.response?.data?.message || 'Login failed. Please check your credentials.';
     logger.error('Login failed', {
@@ -114,13 +100,13 @@ export const getCurrentUser = async (): Promise<User> => {
   try {
     logger.debug('Fetching current user profile');
     
-    const response = await axiosInstance.get<User>(API_PATHS.AUTH.GET_ME);
+    const response = await axiosInstance.get<UserResponse>(API_PATHS.AUTH.GET_ME);
     
     logger.info('User profile fetched successfully', { 
-      userId: response.data.id 
+      userId: response.data.data._id 
     });
     
-    return response.data;
+    return response.data.data;
   } catch (error: any) {
     const errorMessage = error?.response?.data?.message || 'Failed to fetch user profile';
     logger.error('Failed to fetch user profile', {
@@ -142,17 +128,17 @@ export const updateProfile = async (data: Partial<User>): Promise<User> => {
       fields: Object.keys(data) 
     });
     
-    const response = await axiosInstance.put<User>(
+    const response = await axiosInstance.put<UserResponse>(
       API_PATHS.AUTH.UPDATE_PROFILE,
       data
     );
     
     logger.info('User profile updated successfully', { 
-      userId: response.data.id 
+      userId: response.data.data._id 
     });
     
     toast.success('Profile updated successfully');
-    return response.data;
+    return response.data.data;
   } catch (error: any) {
     const errorMessage = error?.response?.data?.message || 'Failed to update profile';
     logger.error('Failed to update profile', {

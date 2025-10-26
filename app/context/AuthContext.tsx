@@ -1,24 +1,10 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { createLogger } from "~/utils/logger";
+import type { User, AuthContextType } from "~/types";
 
 const logger = createLogger('Auth');
 
-interface User {
-  id: string;
-  email: string;
-  name: string;
-}
-
-interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  register: (data: { user: User; token: string }) => void;
-  login: (data: { user: User; token: string }) => void;
-  updateUser: (user: User) => void;
-  logout: () => void;
-}
-
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -27,8 +13,6 @@ export const useAuth = () => {
   }
   return context;
 };
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -95,7 +79,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try{
       setUser(updatedUser);
       localStorage.setItem("user", JSON.stringify(updatedUser));
-      logger.info('User information updated', { userId: updatedUser.id });
+      logger.info('User information updated', { userId: updatedUser._id });
     }catch(error){
       logger.error('Failed to update user information', { 
         error: error instanceof Error ? error.message : 'Unknown error' 
@@ -105,7 +89,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = () => {
     try {
-      const userId = user?.id;
+      const userId = user?._id;
       setUser(null);
       localStorage.removeItem("user");
       localStorage.removeItem("token");

@@ -1,10 +1,4 @@
-export type Feature = {
-  id: string;
-  title: string;
-  description: string;
-  bullets?: string[];
-  icon?: string;
-};
+import type { Feature, Testimonial, FAQ } from '~/types';
 
 export const FEATURES: Feature[] = [
   {
@@ -44,15 +38,6 @@ export const FEATURES: Feature[] = [
   }
 ];
 
-export type Testimonial = {
-  id: string;
-  name: string;
-  role?: string;
-  company?: string;
-  quote: string;
-  avatarUrl?: string;
-};
-
 export const TESTIMONIALS: Testimonial[] = [
   {
     id: 't1',
@@ -76,12 +61,6 @@ export const TESTIMONIALS: Testimonial[] = [
     quote: 'Integrations make reconciliation a breeze — combined with the templates, it feels like a complete invoicing suite.',
   }
 ];
-
-export type FAQ = {
-  id: string;
-  question: string;
-  answer: string;
-};
 
 export const FAQS: FAQ[] = [
   {
