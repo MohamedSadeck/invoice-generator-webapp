@@ -10,9 +10,11 @@
 
 export interface User {
   _id: string;
-  id?: string; // Added for backward compatibility
   name: string;
   email: string;
+  businessName?: string;
+  address?: string;
+  phoneNumber?: string;
 }
 
 export interface AuthContextType {
@@ -48,7 +50,7 @@ export interface AuthResponse {
 export type InvoiceStatus = 'Paid' | 'Unpaid' | 'Overdue' | 'Draft';
 
 export interface InvoiceItem {
-  _id: string;
+  _id?: string;
   name: string;
   description?: string; // Optional for backward compatibility
   quantity: number;
