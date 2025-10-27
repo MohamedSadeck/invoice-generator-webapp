@@ -47,7 +47,7 @@ export interface AuthResponse {
 // Invoice Types
 // ============================================================================
 
-export type InvoiceStatus = 'Paid' | 'Unpaid' | 'Overdue' | 'Draft';
+export type InvoiceStatus = 'Paid' | 'Unpaid' | 'All Statuses' | 'Pending';
 
 export interface InvoiceItem {
   _id?: string;

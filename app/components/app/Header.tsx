@@ -41,7 +41,7 @@ const Header = () => {
 
     const navigationItems = [
         { label: 'Dashboard', icon: <Home size={20} />, path: '/dashboard' },
-        { label: 'All Invoices', icon: <InvoiceIcon size={20} />, path: '/invoices/all' },
+        { label: 'Invoices', icon: <InvoiceIcon size={20} />, path: '/invoices' },
         { label: 'Create Invoice', icon: <Plus size={20} />, path: '/invoices/create' },
     ];
 
