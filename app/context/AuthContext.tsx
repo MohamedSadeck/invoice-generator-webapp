@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
       setIsAuthenticated(true);
-      logger.info('User registered successfully', { userId: user.id, email: user.email });
+      logger.info('User registered successfully', { userId: user._id, email: user.email });
     } catch (error) {
       logger.error('Failed to persist user registration', { 
         error: error instanceof Error ? error.message : 'Unknown error' 
@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
       setIsAuthenticated(true);
-      logger.info('User logged in successfully', { userId: user.id, email: user.email });
+      logger.info('User logged in successfully', { userId: user._id, email: user.email });
     } catch (error) {
       logger.error('Failed to persist user login', { 
         error: error instanceof Error ? error.message : 'Unknown error' 

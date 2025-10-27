@@ -191,7 +191,7 @@ const Signup = () => {
       });
 
       const data = response.data.data;
-      register({ user: { _id: data.id, name: data.name, email: data.email }, token: data.token });
+      register({ user: { _id: data._id, name: data.name, email: data.email }, token: data.token });
 
       logger.info('Signup successful', { email, name });
       setSuccess("Account created successfully!");

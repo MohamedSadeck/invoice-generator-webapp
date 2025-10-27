@@ -141,7 +141,7 @@ const Login = () => {
 
       const data = response.data.data;
 
-      login({ user: { _id: data.id, name: data.name, email: data.email }, token: data.token });
+      login({ user: { _id: data._id, name: data.name, email: data.email }, token: data.token });
 
       logger.info('Login successful', { email });
       navigate("/dashboard");

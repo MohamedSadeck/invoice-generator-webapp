@@ -75,7 +75,6 @@ export interface BillTo {
 
 export interface Invoice {
   _id: string;
-  id?: string; // Added for backward compatibility
   user: User;
   invoiceNumber: string;
   invoiceDate: string; // ISO 8601 date string
