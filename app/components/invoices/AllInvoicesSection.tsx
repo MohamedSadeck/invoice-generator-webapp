@@ -51,7 +51,7 @@ const AllInvoicesSection = ({
   onSendReminder,
   statusChangeLoading,
 }: AllInvoicesSectionProps) => {
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: InvoiceStatus) => {
     switch (status.toLowerCase()) {
       case "paid":
         return "success";
@@ -65,9 +65,9 @@ const AllInvoicesSection = ({
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat("ar-DZ", {
       style: "currency",
-      currency: "USD",
+      currency: "DZD",
     }).format(amount);
   };
 
@@ -244,8 +244,9 @@ const AllInvoicesSection = ({
                         }}
                       >
                         <Trash2 size={18} />
-                      </IconButton>
-                      <IconButton
+                        </IconButton>
+                      {invoice.status === "Unpaid" && (
+                        <IconButton
                         size="small"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -253,7 +254,7 @@ const AllInvoicesSection = ({
                         }}
                       >
                         <Mail size={18} />
-                      </IconButton>
+                      </IconButton>)}
                     </Box>
                   </TableCell>
                 </TableRow>

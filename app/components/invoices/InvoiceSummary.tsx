@@ -17,20 +17,20 @@ const InvoiceSummary = ({ subtotal, tax, total }: InvoiceSummaryProps) => {
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography color="text.secondary">Subtotal:</Typography>
             <Typography fontWeight="500">
-              ${subtotal.toFixed(2)}
+              {subtotal.toFixed(2)} DZD
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography color="text.secondary">Tax:</Typography>
             <Typography fontWeight="500">
-              ${tax.toFixed(2)}
+              {tax.toFixed(2)} DZD
             </Typography>
           </Box>
           <Divider />
           <Box sx={{ display: 'flex', justifyContent: 'space-between', pt: 1 }}>
             <Typography variant="h6" fontWeight="600">Total:</Typography>
             <Typography variant="h6" fontWeight="700" color="primary">
-              ${total.toFixed(2)}
+              {total.toFixed(2)} DZD
             </Typography>
           </Box>
         </Stack>

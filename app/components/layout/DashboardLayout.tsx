@@ -16,7 +16,9 @@ const DashboardLayout = () => {
           px: { xs: 2, sm: 3, md: 4 },
         }}
       >
-        <Outlet />
+        <Box sx={{ marginTop: 3 }}>
+          <Outlet />
+        </Box>
       </Container>
     </Box>
   );

@@ -122,12 +122,19 @@ const AllInvoices = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <CreateWithAiModal open={false} onClose={function (): void {
-        throw new Error("Function not implemented.");
-      } }/>
-      <ReminderModal open={false} onClose={function (): void {
-        throw new Error("Function not implemented.");
-      } } invoiceId={null} />
+      <CreateWithAiModal
+        open={isAiModalOpen}
+        onClose={() => setIsAiModalOpen(false)}
+      />
+
+      <ReminderModal
+        open={isReminderModalOpen}
+        onClose={() => {
+          setIsReminderModalOpen(false);
+          setSelectedInvoiceId(null);
+        }}
+        invoiceId={selectedInvoiceId}
+      />
       <AllInvoicesSection
         invoices={filteredInvoices}
         searchTerm={searchTerm}
@@ -142,20 +149,6 @@ const AllInvoices = () => {
         onDelete={handleDelete}
         onSendReminder={handleOpenReminderModal}
         statusChangeLoading={statusChangeLoading}
-      />
-
-      <CreateWithAiModal
-        open={isAiModalOpen}
-        onClose={() => setIsAiModalOpen(false)}
-      />
-
-      <ReminderModal
-        open={isReminderModalOpen}
-        onClose={() => {
-          setIsReminderModalOpen(false);
-          setSelectedInvoiceId(null);
-        }}
-        invoiceId={selectedInvoiceId}
       />
     </Box>
   );

@@ -108,7 +108,7 @@ const RecentInvoicesTable = ({ invoices }: RecentInvoicesTableProps) => {
                   </td>
                   <td style={{ padding: '16px' }}>
                     <Typography sx={{ fontSize: '0.875rem', color: 'rgb(71, 85, 105)' }}>
-                      ${invoice.total.toFixed(2)}
+                      {invoice.total.toFixed(2)} DZD
                     </Typography>
                   </td>
                   <td style={{ padding: '16px' }}>

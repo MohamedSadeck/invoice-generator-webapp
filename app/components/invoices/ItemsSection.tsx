@@ -94,7 +94,7 @@ const ItemsSection = ({
                   </TableCell>
                   <TableCell align="right">
                     <Typography fontWeight="600">
-                      ${item.total.toFixed(2)}
+                      {item.total.toFixed(2)} DZD
                     </Typography>
                   </TableCell>
                   <TableCell align="center">

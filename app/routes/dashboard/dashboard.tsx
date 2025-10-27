@@ -59,13 +59,13 @@ const Dashboard = () => {
     {
       icon: DollarSign,
       label: "Total Paid",
-      value: `${stats.totalPaid.toFixed(2)}`,
+      value: `${stats.totalPaid.toFixed(2)} DZD`,
       color: "green" as const,
     },
     {
       icon: DollarSign,
       label: "Total Unpaid",
-      value: `${stats.totalUnpaid.toFixed(2)}`,
+      value: `${stats.totalUnpaid.toFixed(2)} DZD`,
       color: "red" as const,
     },
   ];
@@ -79,7 +79,7 @@ const Dashboard = () => {
   }
 
   return (
-    <Box sx={{ m: 4, p: 6, display: 'flex', flexDirection: 'column', gap: 4 }}>
+    <Box sx={{p: 6, display: 'flex', flexDirection: 'column', gap: 4 }}>
       <Box>
         <Typography
           variant="h5"
