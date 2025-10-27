@@ -60,7 +60,7 @@ const EmptyInvoicesState = () => {
       
       <Button
         variant="contained"
-        onClick={() => navigate('/invoices/new')}
+        onClick={() => navigate('/invoices/create')}
         sx={{
           bgcolor: 'rgb(37, 99, 235)',
           color: 'white',

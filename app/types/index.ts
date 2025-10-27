@@ -201,9 +201,23 @@ export interface ParseInvoiceTextRequest {
   text: string;
 }
 
+export interface ParsedInvoiceData {
+  clientName: string;
+  email?: string;
+  address?: string;
+  phoneNumber?: string;
+  items: {
+    name: string;
+    description?: string;
+    quantity: number;
+    unitPrice: number;
+    taxPercent?: number;
+  }[];
+}
+
 export interface ParseInvoiceTextResponse {
-  invoiceData: Partial<CreateInvoiceRequest>;
-  confidence: number;
+  success: boolean;
+  data: ParsedInvoiceData;
 }
 
 export interface GenerateReminderRequest {

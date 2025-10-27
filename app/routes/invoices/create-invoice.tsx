@@ -13,13 +13,14 @@ import {
   Container,
   Stack,
 } from "@mui/material";
-import { Save, X } from "lucide-react";
+import { Save, X, Wand2 } from "lucide-react";
 import InvoiceDetailsSection from "~/components/invoices/InvoiceDetailsSection";
 import BillFromSection from "~/components/invoices/BillFromSection";
 import BillToSection from "~/components/invoices/BillToSection";
 import ItemsSection from "~/components/invoices/ItemsSection";
 import NotesAndTermsSection from "~/components/invoices/NotesAndTermsSection";
 import InvoiceSummary from "~/components/invoices/InvoiceSummary";
+import CreateWithAiModal from "~/components/invoices/CreateWithAiModal";
 
 const CreateInvoice = () => {
   const navigate = useNavigate();
@@ -28,6 +29,8 @@ const CreateInvoice = () => {
 
   // Get existing invoice from location state if editing
   const existingInvoice = location.state?.existingInvoice as InvoiceFormData | null;
+  const aiData = location.state?.aiData;
+  const isFromAi = Boolean(aiData);
 
   const [formData, setFormData] = useState<InvoiceFormData>(existingInvoice || {
     invoiceNumber: '',
@@ -59,20 +62,26 @@ const CreateInvoice = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [isGeneratingNumber, setIsGeneratingNumber] = useState<boolean>(false);
+  const [isAiModalOpen, setIsAiModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    const aiData = location.state?.aiData;
-
     if (aiData) {
       setFormData(prev => ({
         ...prev,
         billTo: {
           clientName: aiData.clientName || '',
-          email: aiData.clientEmail || '',
-          address: aiData.clientAddress || '',
-          phoneNumber: aiData.clientPhone || '',
+          email: aiData.email || '',
+          address: aiData.address || '',
+          phoneNumber: aiData.phoneNumber || '',
         },
-        items: aiData.items || [{ name: '', quantity: 1, unitPrice: 0, taxPercent: 0 }],
+        items: aiData.items?.map((item: any) => ({
+          name: item.name || '',
+          description: item.description || '',
+          quantity: item.quantity || 1,
+          unitPrice: item.unitPrice || 0,
+          taxPercent: item.taxPercent || 0,
+          total: (item.quantity || 1) * (item.unitPrice || 0),
+        })) || [{ name: '', description: '', quantity: 1, unitPrice: 0, taxPercent: 0, total: 0 }],
       }));
     }
 
@@ -199,9 +208,35 @@ const CreateInvoice = () => {
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
-        Create Invoice
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h4" component="h1" fontWeight="bold">
+          Create Invoice
+        </Typography>
+        
+        {!isFromAi && (
+          <Button
+            variant="outlined"
+            startIcon={<Wand2 size={18} />}
+            onClick={() => setIsAiModalOpen(true)}
+            sx={{
+              textTransform: 'none',
+              borderColor: '#1976d2',
+              color: '#1976d2',
+              '&:hover': {
+                borderColor: '#1565c0',
+                bgcolor: 'rgba(25, 118, 210, 0.04)'
+              }
+            }}
+          >
+            Create with AI
+          </Button>
+        )}
+      </Box>
+
+      <CreateWithAiModal
+        open={isAiModalOpen}
+        onClose={() => setIsAiModalOpen(false)}
+      />
       
       <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
         {/* Section 1: Invoice Details */}
