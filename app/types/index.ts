@@ -226,8 +226,8 @@ export interface GenerateReminderRequest {
 }
 
 export interface GenerateReminderResponse {
-  reminderText: string;
   subject: string;
+  body: string;
 }
 
 export interface DashboardSummaryRequest {
