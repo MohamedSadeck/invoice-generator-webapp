@@ -35,8 +35,8 @@ const ItemsSection = ({
         <Typography variant="h6" fontWeight="600" gutterBottom>
           Items
         </Typography>
-        <TableContainer component={Paper} variant="outlined" sx={{ mt: 2 }}>
-          <Table>
+        <TableContainer component={Paper} variant="outlined" sx={{ mt: 2, overflowX: 'auto' }}>
+          <Table sx={{ minWidth: 650 }}>
             <TableHead>
               <TableRow sx={{ bgcolor: 'grey.50' }}>
                 <TableCell><strong>Item</strong></TableCell>
@@ -50,7 +50,7 @@ const ItemsSection = ({
             <TableBody>
               {items.map((item, index) => (
                 <TableRow key={index}>
-                  <TableCell>
+                  <TableCell sx={{ minWidth: 200, maxWidth: 300 }}>
                     <TextField
                       fullWidth
                       size="small"

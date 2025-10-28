@@ -66,9 +66,10 @@ const CreateWithAiModal = ({ open, onClose }: CreateWithAiModalProps) => {
             rows={8}
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder='e.g "Invoice for ClientCorp: 2 hours of design work at 30000da/hr and 1 logo for 170000"'
+            placeholder='Example: "Invoice for TechCorp Inc (contact@techcorp.com, 123 Business St): 5 hours of web development at 25000da/hr, 3 hours of consulting at 40000da/hr, 1 logo design for 150000da"'
             variant="outlined"
             disabled={isLoading}
+            helperText="💡 Tip: Include client name, contact info (optional), and itemize services/products with quantities and prices for best results"
           />
         </Box>
       </DialogContent>
