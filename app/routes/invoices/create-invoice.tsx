@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "~/context/AuthContext";
 import moment from "moment";
+import toast from "react-hot-toast";
 import type { Invoice, InvoiceFormData } from "~/types";
 import logger from "~/utils/logger";
 import axiosInstance from "~/utils/axiosInstance";
@@ -193,14 +194,52 @@ const CreateInvoice = () => {
     setLoading(true);
     
     try {
-      // Add your save logic here
-      logger.info('Saving invoice', { formData });
-      // onSave(formData);
-      // navigate to invoices list or details
+      // Calculate totals
+      const subtotal = calculateSubtotal();
+      const taxTotal = calculateTax();
+      const total = calculateTotal();
+
+      // Prepare the invoice data for the API
+      const invoiceData = {
+        invoiceNumber: formData.invoiceNumber,
+        invoiceDate: formData.invoiceDate,
+        dueDate: formData.dueDate,
+        billFrom: formData.billFrom,
+        billTo: formData.billTo,
+        items: formData.items.map(item => ({
+          name: item.name,
+          description: item.description || '',
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          taxPercent: item.taxPercent,
+          total: item.total,
+        })),
+        notes: formData.notes,
+        paymentTerms: formData.paymentTerms,
+        subTotal: subtotal,
+        taxTotal: taxTotal,
+        total: total,
+      };
+
+      logger.info('Saving invoice', { invoiceData });
+      
+      const response = await axiosInstance.post<{ success: boolean; message: string; data: Invoice }>(
+        API_PATHS.INVOICES.CREATE_INVOICE,
+        invoiceData
+      );
+
+      if (response.data.success) {
+        toast.success('Invoice created successfully!');
+        logger.info('Invoice created', { invoiceId: response.data.data._id });
+        
+        // Navigate to the invoice details page
+        navigate(`/invoices/${response.data.data._id}`);
+      }
     } catch (error) {
       logger.error('Error saving invoice', {
         error: error instanceof Error ? error.message : 'Unknown error'
       });
+      toast.error('Failed to create invoice. Please try again.');
     } finally {
       setLoading(false);
     }
